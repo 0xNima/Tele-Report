@@ -1,9 +1,9 @@
-channel_username = 'gramtestch'
+channel_username = 'your_channel_name'
 
-timezone = 'Asia/Tehran'
+timezone = 'desired timezone'
 
 
-#   sleep times
+#   sleep times in seconds
 
 poll_event_interval = 5
 
