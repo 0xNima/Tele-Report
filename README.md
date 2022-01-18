@@ -17,7 +17,7 @@ virtualenv venv && source venv/bin/activate   # optional
 pip3 install -r requirements.txt
 
 ```
-3- Rename `.env-template` file to `.env` and edit values
+3- Rename `.env-template` file to `.env` and edit values (you should get telegram api_id and api_hash from [Here](https://my.telegram.org/auth?to=apps)
 ```
 cd telereport
 
