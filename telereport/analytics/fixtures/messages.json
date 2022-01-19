@@ -1,0 +1,57 @@
+[
+  {
+    "model": "analytics.message",
+    "pk": 1,
+    "fields": {
+      "local_datetime": "2021-12-26 13:00:05+03:30",
+      "date": "2021-12-26",
+      "time": "13:00:05",
+      "view_count": 1000,
+      "forward_count": 400
+    }
+  },
+  {
+    "model": "analytics.message",
+    "pk": 2,
+    "fields": {
+      "local_datetime": "2021-12-26 13:40:04+03:30",
+      "date": "2021-12-26",
+      "time": "13:40:04",
+      "view_count": 500,
+      "forward_count": 700
+    }
+  },
+  {
+    "model": "analytics.message",
+    "pk": 3,
+    "fields": {
+      "local_datetime": "2021-12-27 9:20:05+03:30",
+      "date": "2021-12-27",
+      "time": "9:20:05",
+      "view_count": 2000,
+      "forward_count": 100
+    }
+  },
+  {
+    "model": "analytics.message",
+    "pk": 4,
+    "fields": {
+      "local_datetime": "2021-12-27 22:10:21+03:30",
+      "date": "2021-12-27",
+      "time": "22:10:21",
+      "view_count": 900,
+      "forward_count": 900
+    }
+  },
+  {
+    "model": "analytics.message",
+    "pk": 5,
+    "fields": {
+      "local_datetime": "2021-12-28 21:30:19+03:30",
+      "date": "2021-12-28",
+      "time": "21:30:19",
+      "view_count": 2980,
+      "forward_count": 1050
+    }
+  }
+]
