@@ -1,0 +1,122 @@
+[
+  {
+    "model": "analytics.event",
+    "pk": 1,
+    "fields": {
+      "local_datetime": "2021-12-26 13:00:05+03:30",
+      "date": "2021-12-26",
+      "time": "13:00:05",
+      "event_id": 1000000,
+      "event_type": 0,
+      "peer_id": 1000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 2,
+    "fields": {
+      "local_datetime": "2021-12-26 14:00:05+03:30",
+      "date": "2021-12-26",
+      "time": "14:00:05",
+      "event_id": 2000000,
+      "event_type": 0,
+      "peer_id": 2000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 3,
+    "fields": {
+      "local_datetime": "2021-12-26 22:00:15+03:30",
+      "date": "2021-12-26",
+      "time": "22:00:15",
+      "event_id": 3000000,
+      "event_type": 1,
+      "peer_id": 1000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 4,
+    "fields": {
+      "local_datetime": "2021-12-27 14:00:05+03:30",
+      "date": "2021-12-27",
+      "time": "14:00:05",
+      "event_id": 4000000,
+      "event_type": 0,
+      "peer_id": 1000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 5,
+    "fields": {
+      "local_datetime": "2021-12-28 20:34:42+03:30",
+      "date": "2021-12-28",
+      "time": "20:34:42",
+      "event_id": 5000000,
+      "event_type": 1,
+      "peer_id": 2000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 6,
+    "fields": {
+      "local_datetime": "2021-12-28 20:15:43+03:30",
+      "date": "2021-12-28",
+      "time": "20:15:43",
+      "event_id": 6000000,
+      "event_type": 1,
+      "peer_id": 4000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 7,
+    "fields": {
+      "local_datetime": "2021-12-28 20:59:59+03:30",
+      "date": "2021-12-28",
+      "time": "20:59:59",
+      "event_id": 7000000,
+      "event_type": 1,
+      "peer_id": 3000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 8,
+    "fields": {
+      "local_datetime": "2021-12-29 23:18:52+03:30",
+      "date": "2021-12-29",
+      "time": "23:18:52",
+      "event_id": 8000000,
+      "event_type": 0,
+      "peer_id": 6000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 9,
+    "fields": {
+      "local_datetime": "2021-12-29 23:32:14+03:30",
+      "date": "2021-12-29",
+      "time": "23:32:14",
+      "event_id": 9000000,
+      "event_type": 0,
+      "peer_id": 6000
+    }
+  },
+  {
+    "model": "analytics.event",
+    "pk": 10,
+    "fields": {
+      "local_datetime": "2021-12-29 23:59:59+03:30",
+      "date": "2021-12-29",
+      "time": "23:59:59",
+      "event_id": 10000000,
+      "event_type": 0,
+      "peer_id": 6000
+    }
+  }
+]
