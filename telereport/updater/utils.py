@@ -6,6 +6,8 @@ from serializers import event_deserializer, message_deserializer
 
 from telethon.tl import types
 
+from telereport.analytics.constants import JOIN, LEAVE, INVITE, JOIN_BY_INVITE
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -106,12 +108,12 @@ class DBManager:
 class Action:
     def __new__(cls, action):
         if isinstance(action, types.ChannelAdminLogEventActionParticipantJoin):
-            return 0
+            return JOIN
         if isinstance(action, types.ChannelAdminLogEventActionParticipantLeave):
-            return 1
+            return LEAVE
         if isinstance(action, types.ChannelAdminLogEventActionParticipantInvite):
-            return 2
+            return INVITE
         if isinstance(action, types.ChannelAdminLogEventActionParticipantJoinByInvite):
-            return 3
+            return JOIN_BY_INVITE
 
         return None
