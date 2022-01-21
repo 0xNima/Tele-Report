@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Join Events</title>
+</head>
+<body>
+    <ul> {{ event_title }}
+        {% for event in events_history %}
+            <li>{{ event }}</li>
+        {% endfor %}
+    </ul>
+
+    <ul> Most {{ event_title }} By Date
+        {% for event in events_most_by_date %}
+            <li>{{ event }}</li>
+        {% endfor %}
+    </ul>
+
+    <ul> Most {{ event_title }} By Time
+        {% for event in events_most_by_hour %}
+            <li>{{ event }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

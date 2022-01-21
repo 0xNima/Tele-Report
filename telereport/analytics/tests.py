@@ -68,7 +68,9 @@ class EventTestCase(TestCase):
     fixtures = ['events.json']
 
     def test_join_by_datetime(self):
-        ids = Event.objects.filter(event_type=JOIN).order_by('-local_datetime').values_list('id', flat=True)
+        ids = Event.objects.filter(event_type=JOIN)\
+                   .values('local_datetime').annotate(count=Count('id'))\
+                   .order_by('-local_datetime').values_list('id', flat=True)
         self.assertEqual(
             list(ids),
             [10, 9, 8, 4, 2, 1]

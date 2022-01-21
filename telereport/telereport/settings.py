@@ -58,7 +58,7 @@ ROOT_URLCONF = 'telereport.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['analytics/templates/events', 'analytics/templates/messages'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
