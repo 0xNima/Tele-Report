@@ -25,3 +25,15 @@ class EventAdmin(admin.ModelAdmin):
 @admin.register(Message)
 class MessageAdmin(admin.ModelAdmin):
     change_list_template = 'messages-list.html'
+
+    def changelist_view(self, request, extra_context=None):
+        urls = [
+            ('Views', 'views'),
+            ('Forwards', 'forwards'),
+        ]
+        if extra_context is None:
+            return super().changelist_view(request, extra_context={'message_urls': urls})
+
+        extra_context.update({'message_urls': urls})
+
+        return super().changelist_view(request, extra_context=extra_context)

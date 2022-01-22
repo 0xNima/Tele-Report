@@ -1,6 +1,6 @@
 import pytz
 
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.views.generic import TemplateView
 
 from .models import Event, Message
@@ -9,17 +9,37 @@ from .constants import CHART_RANGE_SIZE, JOIN, LEAVE, INVITE, JOIN_BY_INVITE
 from updater.config import timezone
 
 
+def unzip(qs, aggregate_key, change_tz=False):
+    labels = []
+    data = []
+
+    for item in qs:
+        data.append(item.pop(aggregate_key))
+        if change_tz:
+            labels.append(
+                item.popitem()[1].astimezone(pytz.timezone(timezone)).strftime('%y-%m-%d %H:%M:%S')
+            )
+        else:
+            labels.append(
+                str(
+                    item.popitem()[1]
+                )
+            )
+
+    return labels, data
+
+
 class EventTemplateView(TemplateView):
     template_name = 'events.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context.update(self.__get_event_context())
+        context.update(self._get_event_context())
 
         return context
 
-    def __get_event_context(self):
+    def _get_event_context(self):
         event_type = getattr(self.__class__, 'event_type')
         event_title = getattr(self.__class__, 'event_title')
 
@@ -37,29 +57,10 @@ class EventTemplateView(TemplateView):
 
         return {
             'event_title': event_title,
-            'events_history': self.__unzip(history, True),
-            'events_most_by_date': self.__unzip(most_by_date),
-            'events_most_by_hour': self.__unzip(most_by_hour)
+            'events_history': unzip(history, 'count', True),
+            'events_most_by_date': unzip(most_by_date, 'count'),
+            'events_most_by_hour': unzip(most_by_hour, 'count')
         }
-
-    def __unzip(self, qs, change_tz=False):
-        labels = []
-        data = []
-
-        for item in qs:
-            data.append(item.pop('count'))
-            if change_tz:
-                labels.append(
-                    item.popitem()[1].astimezone(pytz.timezone(timezone)).strftime('%y-%m-%d %H:%M:%S')
-                )
-            else:
-                labels.append(
-                    str(
-                        item.popitem()[1]
-                    )
-                )
-
-        return labels, data
 
 
 class JoinEventView(EventTemplateView):
@@ -80,3 +81,44 @@ class InviteEventView(EventTemplateView):
 class JoinByInviteEventView(EventTemplateView):
     event_type = JOIN_BY_INVITE
     event_title = 'Join By Invite Events'
+
+
+class MessageTemplateView(TemplateView):
+    template_name = 'messages.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context.update(self._get_event_context())
+
+        return context
+
+    def _get_event_context(self):
+        lookup_field = getattr(self.__class__, 'lookup_field')
+        title = getattr(self.__class__, 'title')
+
+        history = Message.objects.values('local_datetime').annotate(sum=Sum(lookup_field)) \
+                         .order_by('-local_datetime')[:CHART_RANGE_SIZE]
+
+        most_by_date = Message.objects.values('date').annotate(sum=Sum(lookup_field)) \
+                              .order_by('-sum')[:CHART_RANGE_SIZE]
+
+        most_by_hour = Message.objects.values('time__hour').annotate(sum=Sum(lookup_field)) \
+                              .order_by('-sum')[:CHART_RANGE_SIZE]
+
+        return {
+            'title': title,
+            'history': unzip(history, 'sum', True),
+            'most_by_date': unzip(most_by_date, 'sum'),
+            'most_by_hour': unzip(most_by_hour, 'sum')
+        }
+
+
+class MessageViewsTemplateView(MessageTemplateView):
+    lookup_field = 'view_count'
+    title = 'View'
+
+
+class MessageForwardsTemplateView(MessageTemplateView):
+    lookup_field = 'forward_count'
+    title = 'Forward'
