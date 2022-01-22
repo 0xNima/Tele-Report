@@ -45,3 +45,5 @@ python3 main.py
 - [ ] Better visualization of data
 - [ ] Dockerize
 - [ ] Display Banlist
+- [ ] Send post to channel
+- [ ] Get more information about members(if it is possible)
