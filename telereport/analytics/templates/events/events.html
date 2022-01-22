@@ -1,26 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Join Events</title>
-</head>
-<body>
-    <ul> {{ event_title }}
-        {% for event in events_history %}
-            <li>{{ event }}</li>
-        {% endfor %}
-    </ul>
+{% extends "base.html" %}
 
-    <ul> Most {{ event_title }} By Date
-        {% for event in events_most_by_date %}
-            <li>{{ event }}</li>
-        {% endfor %}
-    </ul>
+{% block title %}
+    <title>{{ event_title }}</title>
+{% endblock %}
 
-    <ul> Most {{ event_title }} By Time
-        {% for event in events_most_by_hour %}
-            <li>{{ event }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <canvas id="history-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <canvas id="by-date-chart"></canvas>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <canvas id="by-time-chart"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+        function drawChart(id, title, labels, data) {
+            const ctx = document.getElementById(id).getContext('2d');
+
+            const chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: title,
+                        data: data,
+                        backgroundColor: [
+                        ],
+                        borderColor: [
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+        };
+
+
+        drawChart(
+            'history-chart',
+            '{{ event_title }} History',
+            {{ events_history.0 | safe }},
+            {{ events_history.1 | safe }}
+        );
+
+        drawChart(
+            'by-date-chart',
+            'Most {{ event_title }} By Date',
+            {{ events_most_by_date.0 | safe }},
+            {{ events_most_by_date.1 | safe }}
+        );
+
+
+        drawChart(
+            'by-time-chart',
+            'Most {{ event_title }} By Hour',
+            {{ events_most_by_hour.0 | safe }},
+            {{ events_most_by_hour.1 | safe }}
+        );
+    </script>
+{% endblock %}

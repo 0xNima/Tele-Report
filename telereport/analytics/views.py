@@ -1,8 +1,12 @@
+import pytz
+
 from django.db.models import Count
 from django.views.generic import TemplateView
 
 from .models import Event, Message
 from .constants import CHART_RANGE_SIZE, JOIN, LEAVE, INVITE, JOIN_BY_INVITE
+
+from updater.config import timezone
 
 
 class EventTemplateView(TemplateView):
@@ -33,10 +37,29 @@ class EventTemplateView(TemplateView):
 
         return {
             'event_title': event_title,
-            'events_history': history,
-            'events_most_by_date': most_by_date,
-            'events_most_by_hour': most_by_hour
+            'events_history': self.__unzip(history, True),
+            'events_most_by_date': self.__unzip(most_by_date),
+            'events_most_by_hour': self.__unzip(most_by_hour)
         }
+
+    def __unzip(self, qs, change_tz=False):
+        labels = []
+        data = []
+
+        for item in qs:
+            data.append(item.pop('count'))
+            if change_tz:
+                labels.append(
+                    item.popitem()[1].astimezone(pytz.timezone(timezone)).strftime('%y-%m-%d %H:%M:%S')
+                )
+            else:
+                labels.append(
+                    str(
+                        item.popitem()[1]
+                    )
+                )
+
+        return labels, data
 
 
 class JoinEventView(EventTemplateView):
