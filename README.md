@@ -39,6 +39,11 @@ python3 main.py
 ### TODO List
 
 - [x] Write script for gathering admin logs and message informations
-- [ ] Write queries for extracting useful data and statistics
-- [ ] Visualizing data
+- [x] Write queries for extracting useful data and statistics
+- [x] Visuallizing data
+- [ ] Add log
+- [ ] Better visualization of data
 - [ ] Dockerize
+- [ ] Display Banlist
+- [ ] Send post to channel
+- [ ] Get more information about members(if it is possible)
