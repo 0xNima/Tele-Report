@@ -3,14 +3,16 @@ import os
 import asyncpg
 
 from serializers import event_deserializer, message_deserializer
+from log import Logger
 
 from telethon.tl import types
-
-from telereport.analytics.constants import JOIN, LEAVE, INVITE, JOIN_BY_INVITE
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+logger = Logger(__name__, path='updater.log')
 
 
 class APIInfo:
@@ -23,7 +25,8 @@ class Cache:
 
     def __init__(self):
         if self.__class__._POOL is None:
-            print('initialize Cache pool')
+            logger.info('initializing cache pool')
+
             self.__class__._POOL = redis.ConnectionPool(
                 host=os.getenv('REDIS_HOST', 'localhost'),
                 port=os.getenv('REDIS_PORT', 6973),
@@ -47,7 +50,8 @@ class DBManager:
     _POOL = None
 
     async def init(self):
-        print('initialize DB pool')
+        logger.info('initialize DB pool')
+
         self.__class__._POOL = await asyncpg.create_pool(
             database=os.getenv('DB_NAME'),
             host=os.getenv('DB_HOST', '127.0.0.1'),
@@ -57,7 +61,8 @@ class DBManager:
         )
 
     async def save_events(self, events):
-        print('saving events')
+        logger.info('saving events to DB')
+
         if self.__class__._POOL is None:
             await self.init()
 
@@ -73,7 +78,8 @@ class DBManager:
             )
 
     async def update_or_save_messages(self, messages):
-        print('saving messages')
+        logger.info('saving messages to DB')
+
         if self.__class__._POOL is None:
             await self.init()
 
@@ -107,6 +113,7 @@ class DBManager:
 
 class Action:
     def __new__(cls, action):
+        print(JOIN, LEAVE, INVITE, JOIN_BY_INVITE)
         if isinstance(action, types.ChannelAdminLogEventActionParticipantJoin):
             return JOIN
         if isinstance(action, types.ChannelAdminLogEventActionParticipantLeave):

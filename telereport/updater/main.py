@@ -5,6 +5,9 @@ from telethon import TelegramClient
 from utils import APIInfo, Cache, Action, DBManager
 from serializers import event_serializer, message_serializer
 from config import channel_username, poll_event_interval, iter_message_interval, save_events_interval, save_msg_interval
+from log import Logger
+
+logger = Logger('main', path='updater.log')
 
 
 async def poll_message_info(tl_client: TelegramClient):
@@ -13,7 +16,8 @@ async def poll_message_info(tl_client: TelegramClient):
     pipe = cache.pipe()
 
     while True:
-        print('update messages')
+        logger.info('polling messages')
+
         async for message in tl_client.iter_messages(channel_username):
             local_datetime = message.date
 
@@ -43,7 +47,8 @@ async def poll_participants_events(tl_client: TelegramClient):
     last_log_id = cache.last_log_id()
 
     while True:
-        print('get events')
+        logger.info('polling events')
+
         is_set = False
         async for log in tl_client.iter_admin_log(channel_username, min_id=last_log_id):
             local_datetime = log.date
