@@ -5,7 +5,6 @@ import asyncpg
 from serializers import event_deserializer, message_deserializer
 from log import Logger
 
-from telethon.tl import types
 
 from dotenv import load_dotenv
 
@@ -109,18 +108,3 @@ class DBManager:
                 WHERE analytics_message.view_count <> EXCLUDED.view_count OR analytics_message.forward_count <> EXCLUDED.forward_count
             ''')
             await connection.execute('''TRUNCATE TABLE _message''')
-
-
-class Action:
-    def __new__(cls, action):
-        print(JOIN, LEAVE, INVITE, JOIN_BY_INVITE)
-        if isinstance(action, types.ChannelAdminLogEventActionParticipantJoin):
-            return JOIN
-        if isinstance(action, types.ChannelAdminLogEventActionParticipantLeave):
-            return LEAVE
-        if isinstance(action, types.ChannelAdminLogEventActionParticipantInvite):
-            return INVITE
-        if isinstance(action, types.ChannelAdminLogEventActionParticipantJoinByInvite):
-            return JOIN_BY_INVITE
-
-        return None

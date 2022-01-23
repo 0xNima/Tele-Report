@@ -2,7 +2,8 @@ import asyncio
 
 from telethon import TelegramClient
 
-from utils import APIInfo, Cache, Action, DBManager
+from utils import APIInfo, Cache, DBManager
+from actions import Action
 from serializers import event_serializer, message_serializer
 from config import channel_username, poll_event_interval, iter_message_interval, save_events_interval, save_msg_interval
 from log import Logger

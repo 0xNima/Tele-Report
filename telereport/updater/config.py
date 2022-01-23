@@ -1,6 +1,6 @@
-channel_username = 'your_channel_name'
+channel_username = 'gramtestch'
 
-timezone = 'desired timezone'
+timezone = 'Asia/Tehran'
 
 
 #   sleep times in seconds

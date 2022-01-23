@@ -1,12 +1,12 @@
 import pytz
 
+from django.conf import settings
 from django.db.models import Count, Sum
 from django.views.generic import TemplateView
 
 from .models import Event, Message
-from .constants import CHART_RANGE_SIZE, JOIN, LEAVE, INVITE, JOIN_BY_INVITE
 
-from updater.config import timezone
+from updater import JOIN, LEAVE, INVITE, JOIN_BY_INVITE, timezone
 
 
 def unzip(qs, aggregate_key, change_tz=False):
@@ -45,15 +45,15 @@ class EventTemplateView(TemplateView):
 
         history = Event.objects.filter(event_type=event_type) \
                        .values('local_datetime').annotate(count=Count('id')) \
-                       .order_by('-local_datetime')[:CHART_RANGE_SIZE]
+                       .order_by('-local_datetime')[:settings.CHART_RANGE_SIZE]
 
         most_by_date = Event.objects.filter(event_type=event_type) \
                             .values('date').annotate(count=Count('id')) \
-                            .order_by('-count')[:CHART_RANGE_SIZE]
+                            .order_by('-count')[:settings.CHART_RANGE_SIZE]
 
         most_by_hour = Event.objects.filter(event_type=event_type) \
                             .values('time__hour').annotate(count=Count('id')) \
-                            .order_by('-count')[:CHART_RANGE_SIZE]
+                            .order_by('-count')[:settings.CHART_RANGE_SIZE]
 
         return {
             'event_title': event_title,
@@ -98,13 +98,13 @@ class MessageTemplateView(TemplateView):
         title = getattr(self.__class__, 'title')
 
         history = Message.objects.values('local_datetime').annotate(sum=Sum(lookup_field)) \
-                         .order_by('-local_datetime')[:CHART_RANGE_SIZE]
+                         .order_by('-local_datetime')[:settings.CHART_RANGE_SIZE]
 
         most_by_date = Message.objects.values('date').annotate(sum=Sum(lookup_field)) \
-                              .order_by('-sum')[:CHART_RANGE_SIZE]
+                              .order_by('-sum')[:settings.CHART_RANGE_SIZE]
 
         most_by_hour = Message.objects.values('time__hour').annotate(sum=Sum(lookup_field)) \
-                              .order_by('-sum')[:CHART_RANGE_SIZE]
+                              .order_by('-sum')[:settings.CHART_RANGE_SIZE]
 
         return {
             'title': title,
