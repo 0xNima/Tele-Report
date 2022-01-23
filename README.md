@@ -41,7 +41,7 @@ python3 main.py
 - [x] Write script for gathering admin logs and message informations
 - [x] Write queries for extracting useful data and statistics
 - [x] Visuallizing data
-- [ ] Add log
+- [x] Add log
 - [ ] Better visualization of data
 - [ ] Dockerize
 - [ ] Display Banlist
