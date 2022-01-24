@@ -44,6 +44,7 @@ python3 main.py
 - [x] Add log
 - [ ] Better visualization of data
 - [ ] Dockerize
-- [ ] Display Banlist
+- [x] Display Banlist
 - [ ] Send post to channel
-- [ ] Get more information about members(if it is possible)
+- [ ] Get more information about members(if it is possible like display online members)
+- [ ] Get more information about messages by click/hover on message charts
