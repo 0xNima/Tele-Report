@@ -22,3 +22,17 @@ class Message(WithDateTime):
     forward_count = models.IntegerField(default=0)
 
 
+class TGUser(models.Model):
+    chat_id = models.BigIntegerField(primary_key=True)
+    username = models.CharField(max_length=255, null=True, blank=True)
+    first_name = models.CharField(max_length=255)
+    last_name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}'
+
+
+class KickList(models.Model):
+    user = models.OneToOneField(TGUser, on_delete=models.PROTECT, null=True)
+    datetime = models.DateTimeField(auto_now=True)
+

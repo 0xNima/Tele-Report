@@ -1,11 +1,14 @@
 import asyncio
+import os
 
 from telethon import TelegramClient
+from telethon.tl.types import ChannelParticipantsKicked
 
-from utils import APIInfo, Cache, DBManager
+from utils import Cache, DBManager
 from actions import Action
 from serializers import event_serializer, message_serializer
-from config import channel_username, poll_event_interval, iter_message_interval, save_events_interval, save_msg_interval
+from config import channel_username, poll_event_interval, iter_message_interval, save_events_interval, \
+    save_msg_interval, poll_kicked_interval
 from log import Logger
 
 logger = Logger('main', path='updater.log')
@@ -62,7 +65,8 @@ async def poll_participants_events(tl_client: TelegramClient):
             pipe.hset(
                 'events',
                 log_id,
-                event_serializer((event_type, log.user_id, local_datetime, local_datetime.date(), local_datetime.time()))
+                event_serializer(
+                    (event_type, log.user_id, local_datetime, local_datetime.date(), local_datetime.time()))
             )
 
             if not is_set:
@@ -73,6 +77,19 @@ async def poll_participants_events(tl_client: TelegramClient):
         pipe.execute()
 
         await asyncio.sleep(poll_event_interval)
+
+
+async def poll_kicked_participants(tl_client: TelegramClient):
+    while True:
+        logger.info('polling kicked participants')
+
+        kicked = await tl_client.get_participants(channel_username, filter=ChannelParticipantsKicked)
+
+        if kicked:
+            db = DBManager()
+            await db.save_kicked_members(kicked)
+
+        await asyncio.sleep(poll_kicked_interval)
 
 
 class EventHolder:
@@ -106,13 +123,18 @@ async def save(key, holder, sleep_du):
 
 
 async def start():
-    client = await TelegramClient('telereporter', api_hash=APIInfo.HASH, api_id=APIInfo.ID).start()
+    client = await TelegramClient(
+        'telereporter',
+        api_hash=os.getenv('API_HASH'),
+        api_id=int(os.getenv('API_ID'))
+    ).start()
     await asyncio.gather(
         *[
             asyncio.create_task(poll_message_info(client)),
             asyncio.create_task(poll_participants_events(client)),
+            asyncio.create_task(poll_kicked_participants(client)),
             asyncio.create_task(save('events', EventHolder, save_events_interval)),
-            asyncio.create_task(save('messages', MessageHolder, save_msg_interval))
+            asyncio.create_task(save('messages', MessageHolder, save_msg_interval)),
         ]
     )
 

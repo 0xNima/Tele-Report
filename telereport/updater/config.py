@@ -13,3 +13,4 @@ save_events_interval = 5
 
 save_msg_interval = 15
 
+poll_kicked_interval = 10
