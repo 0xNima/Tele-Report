@@ -42,9 +42,10 @@ python3 main.py
 - [x] Write queries for extracting useful data and statistics
 - [x] Visuallizing data
 - [x] Add log
-- [ ] Better visualization of data
-- [ ] Dockerize
 - [x] Display Banlist
 - [ ] Send post to channel
 - [ ] Get more information about members(if it is possible like display online members)
 - [ ] Get more information about messages by click/hover on message charts
+- [ ] Queue async actions to perform in background
+- [ ] Better visualization of data
+- [ ] Dockerize
