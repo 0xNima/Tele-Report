@@ -1,4 +1,3 @@
-import datetime
 import os
 
 from telethon import TelegramClient
@@ -18,7 +17,7 @@ async def unban_user(user_id):
         await client(
             EditBannedRequest(
                 channel_username, user_id, ChatBannedRights(
-                    until_date=datetime.datetime(2030, 12, 28),
+                    until_date=None,
                     send_messages=True,
                     send_media=True,
                     send_stickers=True,
@@ -43,7 +42,7 @@ async def ban_user(user_id):
         await client(
             EditBannedRequest(
                 channel_username, user_id, ChatBannedRights(
-                    until_date=datetime.datetime(2030, 12, 28),
+                    until_date=None,
                     view_messages=True,
                 )
             )
