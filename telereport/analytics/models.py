@@ -1,4 +1,7 @@
+from asgiref.sync import async_to_sync
 from django.db import models
+
+from .functions import unban_user, ban_user
 
 
 class WithDateTime(models.Model):
@@ -29,10 +32,21 @@ class TGUser(models.Model):
     last_name = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}'
+        return f'{self.first_name} {self.last_name or ""}'
 
 
 class KickList(models.Model):
     user = models.OneToOneField(TGUser, on_delete=models.PROTECT, null=True)
     datetime = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f'{self.user}'
+
+    def delete(self, using=None, keep_parents=False):
+        async_to_sync(unban_user)(self.user.chat_id)
+        super().delete(using, keep_parents)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        async_to_sync(ban_user)(self.user.chat_id)
+        super().save(force_insert, force_update, using, update_fields)
