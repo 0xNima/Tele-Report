@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import JoinEventView, LeaveEventView, InviteEventView, JoinByInviteEventView, MessageForwardsTemplateView, \
-    MessageViewsTemplateView
+    MessageViewsTemplateView, OnlineMembers
 
 urlpatterns = [
     path('event/join/', JoinEventView.as_view()),
@@ -10,4 +10,5 @@ urlpatterns = [
     path('event/join-by-invite/', JoinByInviteEventView.as_view()),
     path('message/views/', MessageViewsTemplateView.as_view()),
     path('message/forwards/', MessageForwardsTemplateView.as_view()),
+    path('online/', OnlineMembers.as_view())
 ]

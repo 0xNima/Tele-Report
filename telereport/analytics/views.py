@@ -1,10 +1,17 @@
 import pytz
+import uuid
 
+from django.apps import apps
 from django.conf import settings
 from django.db.models import Count, Sum
+from django.http import HttpResponse
 from django.views.generic import TemplateView
+from django.views.generic.base import View
+from django.core.cache import cache
 
+from .apps import AnalyticsConfig
 from .models import Event, Message
+from .functions import online_members
 
 from updater import JOIN, LEAVE, INVITE, JOIN_BY_INVITE, timezone
 
@@ -122,3 +129,14 @@ class MessageViewsTemplateView(MessageTemplateView):
 class MessageForwardsTemplateView(MessageTemplateView):
     lookup_field = 'forward_count'
     title = 'Forward'
+
+
+class OnlineMembers(View):
+    def get(self, request, *args, **kwargs):
+        if request.GET.get('rhash'):
+            pass
+        else:
+            rhash = uuid.uuid4().hex
+            cache.set('rhash', rhash)
+            apps.get_app_config(AnalyticsConfig.name).queue.put((online_members, rhash))
+        return HttpResponse(status=200)

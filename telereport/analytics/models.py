@@ -1,7 +1,7 @@
 from asgiref.sync import async_to_sync
 from django.db import models
 
-from .functions import unban_user, ban_user
+from .functions import unban, ban, online_members
 
 
 class WithDateTime(models.Model):
@@ -43,10 +43,14 @@ class KickList(models.Model):
         return f'{self.user}'
 
     def delete(self, using=None, keep_parents=False):
-        async_to_sync(unban_user)(self.user.chat_id)
+        async_to_sync(unban)(self.user.chat_id)
         super().delete(using, keep_parents)
 
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
-        async_to_sync(ban_user)(self.user.chat_id)
+        async_to_sync(ban)(self.user.chat_id)
         super().save(force_insert, force_update, using, update_fields)
+
+
+class OnlineUser(models.Model):
+    user = models.OneToOneField(TGUser, on_delete=models.CASCADE)

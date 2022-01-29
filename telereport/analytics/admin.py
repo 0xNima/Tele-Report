@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Event, Message, KickList
+from .models import Event, Message, KickList, OnlineUser
 
 
 @admin.register(Event)
@@ -39,3 +39,8 @@ class KickListAdmin(admin.ModelAdmin):
 
     def last_name(self, obj):
         return obj.user.last_name
+
+
+@admin.register(OnlineUser)
+class OnlineMembersAdmin(admin.ModelAdmin):
+    change_list_template = 'online-list.html'
