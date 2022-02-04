@@ -4,6 +4,7 @@ import asyncio
 from typing import Callable, Any
 
 from django.core.cache import cache as django_cache
+from django.conf import settings
 
 from django_redis import get_redis_connection
 
@@ -22,7 +23,7 @@ def with_client(action: Callable[[TelegramClient, Any], Any]):
     """
     async def wrapper(*args, **kwargs):
         async with await TelegramClient(
-                'updater/telereporter.session',  # path to .session. It will be created if does not exist
+                'telereporter.session',  # path to .session. It will be created if does not exist
                 api_hash=os.getenv('API_HASH'),
                 api_id=int(os.getenv('API_ID')),
         ).start() as client:
@@ -70,7 +71,7 @@ async def online_members(client: TelegramClient, request_hash: str):
     pipe = cache.pipeline()
 
     offset = 0
-    limit = 25
+    limit = settings.ONLINE_MEMBERS_OFFSET
 
     while True:
         # check if request still valid
@@ -101,7 +102,7 @@ async def online_members(client: TelegramClient, request_hash: str):
 
         offset += len(response.users)
 
-        await asyncio.sleep(2)
+        await asyncio.sleep(settings.ONLINE_MEMBERS_POLLING_INTERVAL)
 
 
 def _bulk_remove(cache, pipe, request_hash):

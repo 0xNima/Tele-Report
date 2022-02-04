@@ -165,3 +165,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CHART_RANGE_SIZE = 30  # by Day
+
+Q_CONSUMING_INTERVAL = 1  # in second
+Q_SIZE = 5
+
+ONLINE_MEMBERS_OFFSET = 200
+
+ONLINE_MEMBERS_POLLING_INTERVAL = 2  # in second

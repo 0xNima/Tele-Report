@@ -5,9 +5,8 @@ import sys
 import threading
 import logging
 
-
 from django.apps import AppConfig
-
+from django.conf import settings
 
 logger = logging.getLogger('django')
 
@@ -36,7 +35,7 @@ class AnalyticsConfig(AppConfig):
             open('.queue', 'bw')
 
     class Q:
-        def __init__(self, size=5):
+        def __init__(self, size=settings.Q_SIZE):
             self.q = queue.Queue(size)
 
         def put(self, obj):
@@ -48,7 +47,7 @@ class AnalyticsConfig(AppConfig):
                     logger.info(f'consuming Q - size:{self.q.qsize()}')
                     fn, arg = self.q.get_nowait()
                     await fn(arg)
-                await asyncio.sleep(1)
+                await asyncio.sleep(settings.Q_CONSUMING_INTERVAL)
 
         def run(self):
             asyncio.run(self.consume())
