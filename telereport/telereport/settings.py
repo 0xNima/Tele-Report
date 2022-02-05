@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASS'),
-        'HOST': os.getenv('DB‌‌‌_HOST'),
+        'HOST': 'db' if os.getenv('DOCKERIZED') else os.getenv('DB_HOST'),
         'PORT': int(os.getenv('DB_PORT')),
     }
 }
@@ -90,13 +90,14 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/10",
+        "LOCATION": f'redis://{"redis" if os.getenv("DOCKERIZED") else os.getenv("REDIS_HOST")}:{os.getenv("REDIS_PORT")}/10',
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
         "TIMEOUT": None
     },
 }
+
 
 LOGGING = {
     'version': 1,
@@ -168,6 +169,7 @@ CHART_RANGE_SIZE = 30  # by Day
 
 Q_CONSUMING_INTERVAL = 1  # in second
 Q_SIZE = 5
+Q_FILE_PATH = '/tmp/.queue'
 
 ONLINE_MEMBERS_OFFSET = 200
 

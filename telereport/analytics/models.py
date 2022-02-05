@@ -1,7 +1,7 @@
 from asgiref.sync import async_to_sync
 from django.db import models
 
-from .functions import unban, ban, online_members
+from .functions import unban, ban
 
 
 class WithDateTime(models.Model):
