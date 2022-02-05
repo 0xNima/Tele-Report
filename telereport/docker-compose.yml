@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: "$DB_NAME"
+      POSTGRES_USER: "$DB_USER"
+      POSTGRES_PASSWORD: "$DB_PASS"
+    ports:
+      - "2345:$DB_PORT"
+  redis:
+    restart: always
+    image: redis:latest
+    ports:
+      - "9736:$REDIS_PORT"
+    volumes:
+      - ./redis:/data
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8080"
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - redis
