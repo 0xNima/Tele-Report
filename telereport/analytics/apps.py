@@ -4,6 +4,7 @@ import os
 import sys
 import threading
 import logging
+import signal
 
 from django.apps import AppConfig
 from django.conf import settings
@@ -16,23 +17,23 @@ class AnalyticsConfig(AppConfig):
     name = 'analytics'
 
     def __init__(self, *args, **kwargs):
-        #   without --norelead flag, django create 2 process. So ready() method is called twice.
-        #   By creating .queue file, we have control on creating Queue only once
-        self.create_q = True if sys.argv.__contains__('--noreload') else os.path.exists('.queue')
+        if sys.argv.__contains__('runserver'):
+            # without `--norelead` flag, django create 2 process. So ready() method is called twice.
+            # By creating .queue file, we have control on creating Queue only once
+            self.create_q = True if sys.argv.__contains__('--noreload') else os.path.exists(settings.Q_FILE_PATH)
 
-        if self.create_q:
-            logger.info('Creating Queue')
-            self.queue = self.Q()
-
+            if self.create_q:
+                logger.info('Creating Queue')
+                self.queue = self.Q()
         super().__init__(*args, **kwargs)
 
     def ready(self):
-        if hasattr(self, 'queue'):
-            logger.info('Queue thread starting...')
-            threading.Thread(target=self.queue.run).start()
-            os.remove('.queue')     # the queue is already created, so we don't need to .queue
-        else:
-            open('.queue', 'bw')
+        if hasattr(self, 'create_q'):
+            if hasattr(self, 'queue'):
+                logger.info('Queue thread starting...')
+                threading.Thread(name='q-thread', target=self.queue.run, daemon=True).start()
+            else:
+                open(settings.Q_FILE_PATH, 'bw')
 
     class Q:
         def __init__(self, size=settings.Q_SIZE):
@@ -51,3 +52,14 @@ class AnalyticsConfig(AppConfig):
 
         def run(self):
             asyncio.run(self.consume())
+
+
+def sig_handler(signum, frame):
+    try:
+        os.remove(settings.Q_FILE_PATH)
+    except FileNotFoundError:
+        sys.exit(0)
+
+
+for sig in [signal.SIGINT, signal.SIGTERM]:
+    signal.signal(sig, sig_handler)
